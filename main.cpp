@@ -28,7 +28,7 @@ int main()
 #endif
 
     //:::: CREAMOS LA VENTANA:::://
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "SuperMarket Rescue", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "No More War: Survive", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -154,9 +154,9 @@ void initScene(Shader ourShader)
        
 
     //:::: INICIALIZAMOS NUESTROS MODELOS :::://    
-    models.push_back(Model("carrorojo", "models/CarroRojo.obj", glm::vec3(5.3, 0.5, -4.3), glm::vec3(0, 90, 0), 0.0f, initScale));
-    models.push_back(Model("carroazul", "models/CarroAzul.obj", glm::vec3(-9.6, 0.7, -2), glm::vec3(0, 0, 0), 0.0f, initScale));
-    models.push_back(Model("van", "models/Van.obj", glm::vec3(12, 0.8, -4.5), glm::vec3(0, 90, 0), 0.0f, initScale));
+    models.push_back(Model("carrorojo", "models/test/ANgel.obj", glm::vec3(5.3, 0.5, -4.3), glm::vec3(0, 90, 0), 0.0f, initScale));
+    models.push_back(Model("carroazul", "models/test/ave1.obj", glm::vec3(-9.6, 0.7, -2), glm::vec3(0, 0, 0), 0.0f, initScale));
+    //models.push_back(Model("van", "models/Van.obj", glm::vec3(12, 0.8, -4.5), glm::vec3(0, 90, 0), 0.0f, initScale));
    
    
     //CREAMOS TODAS  LAS CAJAS DE COLISION INDIVIDUALES
@@ -349,6 +349,7 @@ void setMultipleLight(Shader *shader, vector<glm::vec3> pointLightPositions)
 
 void collisions()
 {
+    
     //TODO LO DE LAS COLISIONES VA AQUÍ
     detectColls(collboxes, &camera, renderCollBox, collidedObject_callback);
 }
