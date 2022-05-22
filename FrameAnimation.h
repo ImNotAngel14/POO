@@ -3,6 +3,7 @@ class FrameAnimation
 {
 	//Methods
 public:
+	FrameAnimation();
 	FrameAnimation(int _frames, float _duration);
 	~FrameAnimation();
 	int UpdateAnimation(float _deltaTime);

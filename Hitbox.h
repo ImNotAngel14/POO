@@ -4,6 +4,7 @@ class Hitbox
 {
 	//Methods
 public:
+	Hitbox();
 	Hitbox(glm::vec3 _position, float _radius, float _cooldown);
 	~Hitbox();
 	void UpdateHitbox(glm::vec3 _newPos, float _deltaTime);

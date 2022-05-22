@@ -14,6 +14,12 @@
 #include <engine/textrenderer.h>
 #include <glad/glad.h>
 #include <iostream>
+#pragma region myLibrarys
+#include "Player.h"
+#include "Building.h"
+//#include "Object.h"
+#pragma endregion
+//Water water;
 
 int main()
 {
@@ -57,7 +63,8 @@ int main()
     Shader selectShader("shaders/selectedShader.vs", "shaders/lighting_maps.fs");
     initScene(ourShader);
     Terrain terrain("textures/heightmap.jpg", texturePaths);
-    SkyBox sky(1.0f, "1");
+    
+    SkyBox sky(1.0f, "6");
     cb = isCollBoxModel ? &models[indexCollBox].collbox : &collboxes.at(indexCollBox).second;
 
     //:::: RENDER:::://
@@ -72,6 +79,10 @@ int main()
 
         //::::ENTRADA CONTROL:::://
         processInput(window);
+
+        //::::ACTUALIZAR:::::://
+        updateGame(deltaTime);
+        //water.UpdateWater(deltaTime);
         //:::: LIMPIAMOS BUFFERS:::://
         glClearColor(0.933f, 0.811f, 0.647f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -89,12 +100,15 @@ int main()
         drawModels(&ourShader, view, projection);
         //:::: SKYBOX Y TERRENO:::://
         loadEnviroment(&terrain, &sky, view, projection);
+        
         //:::: COLISIONES :::://
         collisions();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    //:::: LIBERACIÓN DE MEMORIA:::://   
+    //:::: LIBERACIÓN DE MEMORIA::::// 
+    delete enemy;
+    delete water;
     delete[] texturePaths;
     sky.Release();
     terrain.Release();
@@ -104,6 +118,10 @@ int main()
         collboxes[i].second.Release();
     for (int i = 0; i < models.size(); i++)
         models[i].Release();
+    for (int i = 0; i < city.size(); i++)
+        city[i].Release();
+    for (int i = 0; i < mapItems.size(); i++)
+        mapItems[i].Release();
     for (int i = 0; i < rigidModels.size(); i++)
     {
         physicsEnviroment.Unregister(rigidModels[i].getRigidbox());
@@ -152,13 +170,26 @@ void initScene(Shader ourShader)
     //:::: CARGAMOS LOS SHADERS :::://
     ourShader.use();
        
-
+    city.push_back(Building(glm::vec3(20, 0, 10)));
+    city.push_back(Building(glm::vec3(20, 0, -10)));
+    city.push_back(Building(glm::vec3(-20, 0, 10)));
+    city.push_back(Building(glm::vec3(-20, 0, -10)));
+    city.push_back(Building(glm::vec3(10, 0, 20)));
+    city.push_back(Building(glm::vec3(10, 0, -20)));
+    city.push_back(Building(glm::vec3(-10, 0, 20)));
+    city.push_back(Building(glm::vec3(-10, 0, -20)));
+    mapItems.push_back(Object(glm::vec3(20, 1, 0), CAN));
+    mapItems.push_back(Object(glm::vec3(-20, 1, 0), CAN));
+    mapItems.push_back(Object(glm::vec3(0, 1, 20), CAN));
+    mapItems.push_back(Object(glm::vec3(0, 1, -20), CAN));
+    //mapItems.push_back(Object(glm::vec3(0, 1, 0), CAN));
+    //enemigo.push_back(Enemy(glm::vec3(0, 0, 0)));
+    enemy = new Enemy(glm::vec3(0, 0, 0));
+    water = new Water();
     //:::: INICIALIZAMOS NUESTROS MODELOS :::://    
-    models.push_back(Model("carrorojo", "models/test/ANgel.obj", glm::vec3(5.3, 0.5, -4.3), glm::vec3(0, 90, 0), 0.0f, initScale));
-    models.push_back(Model("carroazul", "models/test/ave1.obj", glm::vec3(-9.6, 0.7, -2), glm::vec3(0, 0, 0), 0.0f, initScale));
+    //models.push_back(Model("carrorojo", "models/test/ANgel.obj", glm::vec3(5.3, 0.5, -4.3), glm::vec3(0, 90, 0), 0.0f, initScale));
+    //models.push_back(Model("carroazul", "models/test/ave1.obj", glm::vec3(-9.6, 0.7, -2), glm::vec3(0, 0, 0), 0.0f, initScale));
     //models.push_back(Model("van", "models/Van.obj", glm::vec3(12, 0.8, -4.5), glm::vec3(0, 90, 0), 0.0f, initScale));
-   
-   
     //CREAMOS TODAS  LAS CAJAS DE COLISION INDIVIDUALES
     CollisionBox collbox;
     glm::vec4 colorCollbox(0.41f, 0.2f, 0.737f, 0.06f);
@@ -214,7 +245,7 @@ void loadEnviroment(Terrain *terrain, SkyBox *sky, glm::mat4 view, glm::mat4 pro
 void drawModels(Shader *shader, glm::mat4 view, glm::mat4 projection)
 {
     //DEFINIMOS EL BRILLO  DEL MATERIAL
-    shader->setFloat("material.shininess", 60.0f);
+    shader->setFloat("material.shininess", 40.0f);
     setMultipleLight(shader, pointLightPositions);   
     for (int i = 0; i < models.size(); i++)
     {
@@ -223,6 +254,26 @@ void drawModels(Shader *shader, glm::mat4 view, glm::mat4 projection)
         models[i].Draw(*shader);
         detectColls(&models[i].collbox, models[i].name, &camera, renderCollBox, collidedObject_callback);
     }
+    for (int i = 0; i < city.size(); i++)
+    {
+        shader->use();
+        city[i].Draw(*shader, view, projection);
+    }
+    for (int i = 0; i < mapItems.size(); i++)
+    {
+        shader->use();
+        mapItems[i].DrawObject(*shader);
+    }
+    water->DrawWater(*shader);
+}
+
+void updateGame(float deltaTime)
+{
+    for (int i = 0; i < mapItems.size(); i++)
+    {
+        mapItems[i].UpdateObject(deltaTime);
+    }
+    water->UpdateWater(deltaTime);
 }
 
 void setSimpleLight(Shader *shader)

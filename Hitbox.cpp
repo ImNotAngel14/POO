@@ -1,5 +1,10 @@
 #include "Hitbox.h"
 
+Hitbox::Hitbox()
+{
+
+}
+
 Hitbox::Hitbox(glm::vec3 _position, float _radius, float _cooldown)
 {
 	position = _position;

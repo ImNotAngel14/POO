@@ -1,7 +1,7 @@
 #pragma once
 #include <engine/model.h>
 #include "Hitbox.h"
-#include "Inventory.h"
+//#include "Inventory.h"
 
 class Player
 {
@@ -12,14 +12,14 @@ public:
 	void setPlayerPos(glm::vec3 _cameraPos);
 	glm::vec3 getPlayerPos();
 	//void pickUpItem(Items item, Objeto* obj);
-	Hitbox* getHitbox();
+	Hitbox getHitbox();
 private:
 
 public:
 
 private:
 	glm::vec3 position;
-	Hitbox* playerHitbox;
-	Inventory inventory;
+	Hitbox playerHitbox;
+	//Inventory inventory;
 };
 
