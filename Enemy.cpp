@@ -1,16 +1,17 @@
 #include "Enemy.h"
 
-//Enemy::Enemy()
-//{
-//
-//}
+Enemy::Enemy()
+{
+	chasingPlayer = false;
 
-Enemy::Enemy(glm::vec3 spawn)
+}
+
+Enemy::Enemy(glm::vec3 spawn, int totalFrames, float switchTime)
 {
 	this->spawn = spawn;
 	this->position = spawn;
 	chasingPlayer = false;
-	animation = FrameAnimation(5, 1.2f);
+	animation = FrameAnimation(totalFrames, switchTime);
 	//houseModel = Model("Build", "models/casa/casa1.obj", ubication, glm::vec3(0, 90, 0), 0.0f, 1.0f);
 	enemyModel[0] = Model("Enemy1", "models/Bandido/bandido1.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 1.0f);
 	enemyModel[1] = Model("Enemy2", "models/Bandido/bandido2.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 1.0f);
@@ -24,17 +25,18 @@ Enemy::~Enemy()
 
 }
 
-void Enemy::UpdateEnemy(float _dt, glm::vec3 playerPos)
+void Enemy::UpdateEnemy(float deltaTime, glm::vec3 playerPos)
 {
-	animation.UpdateAnimation(_dt);
-}
-
-void Enemy::DrawEnemy(Shader _shader)
-{
+	animation.UpdateAnimation(deltaTime);
 
 }
 
-void Enemy::moveTo(glm::vec3 coord, float _dt)
+void Enemy::DrawEnemy(Shader shader)
+{
+	enemyModel[animation.getActualFrame()].Draw(shader);
+}
+
+void Enemy::moveTo(glm::vec3 coord, float deltaTime)
 {
 	glm::vec3 direction;
 	direction.x = coord.x - this->position.x;
@@ -43,7 +45,7 @@ void Enemy::moveTo(glm::vec3 coord, float _dt)
 	direction.x /= hyp;
 	direction.z /= hyp;
 	float speed = 0.5f;
-	position.x += direction.x * speed * _dt;
-	position.z += direction.z * speed * _dt;
+	position.x += direction.x * speed * deltaTime;
+	position.z += direction.z * speed * deltaTime;
 	//rotAngle = atan2(direciton.x, direction.z) + 100 /PI;
 }

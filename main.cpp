@@ -88,6 +88,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //:::: PASAMOS INFORMACIÓN AL SHADER:::://
         ourShader.use();
+        //player.
 
         //:::: DEFINICIÓN DE MATRICES::::// La multiplicaciónd e model*view*projection crea nuestro entorno 3D
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom),
@@ -107,7 +108,7 @@ int main()
         glfwPollEvents();
     }
     //:::: LIBERACIÓN DE MEMORIA::::// 
-    delete enemy;
+    //delete enemy;
     delete water;
     delete[] texturePaths;
     sky.Release();
@@ -178,13 +179,12 @@ void initScene(Shader ourShader)
     city.push_back(Building(glm::vec3(10, 0, -20)));
     city.push_back(Building(glm::vec3(-10, 0, 20)));
     city.push_back(Building(glm::vec3(-10, 0, -20)));
-    mapItems.push_back(Object(glm::vec3(20, 1, 0), CAN));
-    mapItems.push_back(Object(glm::vec3(-20, 1, 0), CAN));
-    mapItems.push_back(Object(glm::vec3(0, 1, 20), CAN));
-    mapItems.push_back(Object(glm::vec3(0, 1, -20), CAN));
-    //mapItems.push_back(Object(glm::vec3(0, 1, 0), CAN));
-    //enemigo.push_back(Enemy(glm::vec3(0, 0, 0)));
-    enemy = new Enemy(glm::vec3(0, 0, 0));
+    mapItems.push_back(Object(glm::vec3(20, 1, 0), KEY));
+    mapItems.push_back(Object(glm::vec3(-20, 1, 0), KEY));
+    mapItems.push_back(Object(glm::vec3(0, 1, 20), KEY));
+    mapItems.push_back(Object(glm::vec3(0, 1, -20), KEY));
+    ciudad.push_back(House(glm::vec3(0.0f, 0.0f, 0.0f), true));
+    //enemy = new Enemy(glm::vec3(0, 0, 0));
     water = new Water();
     //:::: INICIALIZAMOS NUESTROS MODELOS :::://    
     //models.push_back(Model("carrorojo", "models/test/ANgel.obj", glm::vec3(5.3, 0.5, -4.3), glm::vec3(0, 90, 0), 0.0f, initScale));
@@ -245,8 +245,9 @@ void loadEnviroment(Terrain *terrain, SkyBox *sky, glm::mat4 view, glm::mat4 pro
 void drawModels(Shader *shader, glm::mat4 view, glm::mat4 projection)
 {
     //DEFINIMOS EL BRILLO  DEL MATERIAL
-    shader->setFloat("material.shininess", 40.0f);
+    shader->setFloat("material.shininess", 40.0f);//40.0
     setMultipleLight(shader, pointLightPositions);   
+    /*
     for (int i = 0; i < models.size(); i++)
     {
         //SI SE RECOGIO EL OBJETO
@@ -254,6 +255,7 @@ void drawModels(Shader *shader, glm::mat4 view, glm::mat4 projection)
         models[i].Draw(*shader);
         detectColls(&models[i].collbox, models[i].name, &camera, renderCollBox, collidedObject_callback);
     }
+    */
     for (int i = 0; i < city.size(); i++)
     {
         shader->use();
@@ -265,6 +267,7 @@ void drawModels(Shader *shader, glm::mat4 view, glm::mat4 projection)
         mapItems[i].DrawObject(*shader);
     }
     water->DrawWater(*shader);
+    ciudad[0].DrawHouse(*shader);
 }
 
 void updateGame(float deltaTime)
@@ -274,6 +277,8 @@ void updateGame(float deltaTime)
         mapItems[i].UpdateObject(deltaTime);
     }
     water->UpdateWater(deltaTime);
+    //glm::vec3& cPos = camera.Position;
+    player.UpdatePlayer(&camera, deltaTime);
 }
 
 void setSimpleLight(Shader *shader)
@@ -402,5 +407,5 @@ void collisions()
 {
     
     //TODO LO DE LAS COLISIONES VA AQUÍ
-    detectColls(collboxes, &camera, renderCollBox, collidedObject_callback);
+    //detectColls(collboxes, &camera, renderCollBox, collidedObject_callback);
 }

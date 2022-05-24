@@ -17,8 +17,8 @@ Water::~Water()
 
 void Water::UpdateWater(float deltaTime)
 {
-	grades < 180 ? grades += 0.5f * deltaTime : grades = 0;
-	height = sin(grades) - 1.5f;
+	grades < 180 ? grades += 0.2f * deltaTime : grades = 0;
+	height = (sin(grades) - 1.5f)/2;
 	waterModel.setPosition(glm::vec3(0, height, 0));
 }
 void Water::DrawWater(Shader _shader)

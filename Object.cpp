@@ -2,12 +2,16 @@
 
 Object::Object()
 {
-
+	angle = 0;
+	grades = 0;
+	position = glm::vec3(0, 0, 0);
+	height = 0;
 }
 
 Object::Object(glm::vec3 _position, Item _item)
 {
 	angle = 0;
+	grades = 0;
 	position = _position;
 	item = _item;
 	loadModel();
@@ -27,13 +31,14 @@ Object::~Object()
 {
 }
 
-void Object::UpdateObject(float _dt)
+void Object::UpdateObject(float deltaTime)
 {
-	angle < 360 ? angle += 45.0f * _dt : angle = 0;
+	angle < 360 ? angle += 45.0f * deltaTime : angle = 0;
+	grades < 180 ? grades += 0.5f * deltaTime : grades = 0;
 	objModel.setAngles(glm::vec3(0.0f, angle, 0.0f));
-	//::::::::::height animation
-
-
+	height = sin(grades)/2;
+	//std::cout << height<<endl;
+	objModel.setPosition(glm::vec3(position.x, position.y + height, position.z));
 }
 
 void Object::DrawObject(Shader _shader)

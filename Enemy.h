@@ -6,18 +6,21 @@
 class Enemy : public Entity
 {
 public:
-	Enemy(glm::vec3 spawn);
+	Enemy();
+	Enemy(glm::vec3 spawn, int totalFrames, float switchTime);
 	~Enemy();
-	void UpdateEnemy(float _dt, glm::vec3 playerPos);
-	void DrawEnemy(Shader _shader);
+	void UpdateEnemy(float deltaTime, glm::vec3 playerPos);
+	void DrawEnemy(Shader shader);
+	
 private:
-	void moveTo(glm::vec3 coord, float _dt);
+	void moveTo(glm::vec3 coord, float deltaTime);
 public:
 
 private:
 	bool chasingPlayer;
 	glm::vec3 position;
 	glm::vec3 spawn;
+protected:
 	Model enemyModel[5];
 	FrameAnimation animation;
 };

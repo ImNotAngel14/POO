@@ -5,11 +5,12 @@ FrameAnimation::FrameAnimation()
 
 }
 
-FrameAnimation::FrameAnimation(int _frames, float _duration)
+FrameAnimation::FrameAnimation(int _frames, float switchTime)
 {
-	frame = _frames;
-	duration = _duration;
+	this->frameCount = frameCount;
+	this->switchTime = switchTime;
 	actualFrame = 0;
+	totalTime = 0.0f;
 }
 
 FrameAnimation::~FrameAnimation()
@@ -17,9 +18,18 @@ FrameAnimation::~FrameAnimation()
 
 }
 
-int FrameAnimation::UpdateAnimation(float _deltaTime)
+void FrameAnimation::UpdateAnimation(float deltaTime)
 {
-	float frameDuration = duration / frame;
-	if(_deltaTime > frameDuration)
-	return actualFrame;
+	totalTime += deltaTime;
+	if (totalTime >= switchTime)
+	{
+		totalTime -= switchTime;
+		actualFrame++;
+		if (actualFrame >= frameCount)
+		{
+			actualFrame = 0;
+		}
+	}
 }
+
+int FrameAnimation::getActualFrame() { return actualFrame; }

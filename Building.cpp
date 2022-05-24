@@ -1,5 +1,10 @@
 #include "Building.h"
 
+Building::Building()
+{
+	position = glm::vec3(0.0f, 0.0f, 0.0f);
+}
+
 Building::Building(glm::vec3 ubication)
 {
 	position = ubication;

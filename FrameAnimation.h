@@ -4,15 +4,17 @@ class FrameAnimation
 	//Methods
 public:
 	FrameAnimation();
-	FrameAnimation(int _frames, float _duration);
+	FrameAnimation(int frameCount, float switchTime);
 	~FrameAnimation();
-	int UpdateAnimation(float _deltaTime);
+	void UpdateAnimation(float deltaTime);
+	int getActualFrame();
 private:
 	//Attributes
 public:
 private:
-	int frame;
+	int frameCount;
 	int actualFrame;
-	float duration;
+	float switchTime;
+	float totalTime;
 };
 

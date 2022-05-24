@@ -1,5 +1,10 @@
 #include "Player.h"
 
+Player::Player()
+{
+
+}
+
 Player::Player(glm::vec3 _position)
 {
 	position = _position;
@@ -10,9 +15,11 @@ Player::~Player()
 {
 }
 
-void Player::UpdatePlayer(glm::vec3 _cameraPos, float _dt)
+void Player::UpdatePlayer(Camera* _camera, float _dt)
 {
 	playerHitbox.UpdateHitbox(position, _dt);
+	//Ya puedo poner la camara
+	//_camera->Position = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 void Player::setPlayerPos(glm::vec3 _cameraPos) { position = _cameraPos; }
