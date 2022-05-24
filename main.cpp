@@ -1,4 +1,5 @@
-﻿
+﻿#include <stdlib.h>
+#include <time.h>
 #include <GLFW/glfw3.h>
 #include <engine/Billboard.h>
 #include <engine/CollisionBox.h>
@@ -17,13 +18,13 @@
 #pragma region myLibrarys
 #include "Player.h"
 #include "Building.h"
-//#include "Object.h"
 #pragma endregion
 //Water water;
 
 int main()
 {
     //:::: INICIALIZAMOS GLFW CON LA VERSIÓN 3.3 :::://
+    srand(time(NULL));
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -108,8 +109,10 @@ int main()
         glfwPollEvents();
     }
     //:::: LIBERACIÓN DE MEMORIA::::// 
-    //delete enemy;
     delete water;
+    delete key;
+    delete battery;
+    //delete trophy;
     delete[] texturePaths;
     sky.Release();
     terrain.Release();
@@ -170,26 +173,51 @@ void initScene(Shader ourShader)
 
     //:::: CARGAMOS LOS SHADERS :::://
     ourShader.use();
-       
-    city.push_back(Building(glm::vec3(20, 0, 10)));
+    //:::: INICIALIZAMOS NUESTROS MODELOS ::::// 
+   /* city.push_back(Building(glm::vec3(20, 0, 10)));
     city.push_back(Building(glm::vec3(20, 0, -10)));
     city.push_back(Building(glm::vec3(-20, 0, 10)));
     city.push_back(Building(glm::vec3(-20, 0, -10)));
     city.push_back(Building(glm::vec3(10, 0, 20)));
     city.push_back(Building(glm::vec3(10, 0, -20)));
     city.push_back(Building(glm::vec3(-10, 0, 20)));
-    city.push_back(Building(glm::vec3(-10, 0, -20)));
-    mapItems.push_back(Object(glm::vec3(20, 1, 0), KEY));
-    mapItems.push_back(Object(glm::vec3(-20, 1, 0), KEY));
-    mapItems.push_back(Object(glm::vec3(0, 1, 20), KEY));
-    mapItems.push_back(Object(glm::vec3(0, 1, -20), KEY));
-    ciudad.push_back(House(glm::vec3(0.0f, 0.0f, 0.0f), true));
-    //enemy = new Enemy(glm::vec3(0, 0, 0));
+    city.push_back(Building(glm::vec3(-10, 0, -20)));*/
+    mapItems.push_back(Object(glm::vec3(20, 1, 0), CAN));
+    mapItems.push_back(Object(glm::vec3(-20, 1, 0), CAN));
+    mapItems.push_back(Object(glm::vec3(0, 1, 20), CAN));
+    mapItems.push_back(Object(glm::vec3(0, 1, -20), CAN));
+
+    city.push_back(House(glm::vec3(20, 0, 10), true));
+    city.push_back(House(glm::vec3(20, 0, -10), true));
+    city.push_back(House(glm::vec3(-20, 0, 10), true));
+    city.push_back(House(glm::vec3(-20, 0, -10), true));
+    city.push_back(House(glm::vec3(10, 0, 20), true));
+    city.push_back(House(glm::vec3(10, 0, -20), true));
+    city.push_back(House(glm::vec3(-10, 0, 20), true));
+    city.push_back(House(glm::vec3(-10, 0, -20), true));
+
+    city.push_back(House(glm::vec3(0.0f, 0.0f, 0.0f), false));//Central
+
+    //0.1349f, 0.25f, 3.8589f
+
+    int random[3];
+    random[0] = rand() % 8;
+    glm::vec3 tempPos =city[random[0]].getTable();
+    key = new Object(tempPos, KEY);
+    do 
+    {
+        random[1] = rand() % 8;
+    } while (random[0] == random[1]);
+    tempPos = city[random[1]].getTable();
+    battery = new Object(tempPos, BATTERY);
+    do 
+    {
+        random[2] = rand() % 8;
+    } while (random[2] == random[1] || random[2] == random[0]);
+    tempPos = city[random[2]].getTable();
+    //trophy = new Object(tempPos, BATTERY);
     water = new Water();
-    //:::: INICIALIZAMOS NUESTROS MODELOS :::://    
-    //models.push_back(Model("carrorojo", "models/test/ANgel.obj", glm::vec3(5.3, 0.5, -4.3), glm::vec3(0, 90, 0), 0.0f, initScale));
-    //models.push_back(Model("carroazul", "models/test/ave1.obj", glm::vec3(-9.6, 0.7, -2), glm::vec3(0, 0, 0), 0.0f, initScale));
-    //models.push_back(Model("van", "models/Van.obj", glm::vec3(12, 0.8, -4.5), glm::vec3(0, 90, 0), 0.0f, initScale));
+    
     //CREAMOS TODAS  LAS CAJAS DE COLISION INDIVIDUALES
     CollisionBox collbox;
     glm::vec4 colorCollbox(0.41f, 0.2f, 0.737f, 0.06f);
@@ -259,7 +287,7 @@ void drawModels(Shader *shader, glm::mat4 view, glm::mat4 projection)
     for (int i = 0; i < city.size(); i++)
     {
         shader->use();
-        city[i].Draw(*shader, view, projection);
+        city[i].DrawHouse(*shader);
     }
     for (int i = 0; i < mapItems.size(); i++)
     {
@@ -267,7 +295,8 @@ void drawModels(Shader *shader, glm::mat4 view, glm::mat4 projection)
         mapItems[i].DrawObject(*shader);
     }
     water->DrawWater(*shader);
-    ciudad[0].DrawHouse(*shader);
+    key->DrawObject(*shader);
+    battery->DrawObject(*shader);
 }
 
 void updateGame(float deltaTime)
@@ -276,6 +305,8 @@ void updateGame(float deltaTime)
     {
         mapItems[i].UpdateObject(deltaTime);
     }
+    key->UpdateObject(deltaTime);
+    battery->UpdateObject(deltaTime);
     water->UpdateWater(deltaTime);
     //glm::vec3& cPos = camera.Position;
     player.UpdatePlayer(&camera, deltaTime);
@@ -405,7 +436,28 @@ void setMultipleLight(Shader *shader, vector<glm::vec3> pointLightPositions)
 
 void collisions()
 {
-    
+    if (player.getHitbox().areColliding(player.getHitbox(), key->getHitbox()))
+    {
+        key->itemConsumed();
+        cout << "Llave recogida" << endl;
+    }
+    if (player.getHitbox().areColliding(player.getHitbox(), battery->getHitbox()))
+    {
+        battery->itemConsumed();
+        cout << "Bateria recogida" << endl;
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        if (player.getHitbox().areColliding(player.getHitbox(), mapItems[i].getHitbox()))
+        {
+            mapItems[i].itemConsumed();
+            cout << "Lata "<<i<<" recogida" << endl;
+        }
+    }
+    /*if (player.getHitbox().areColliding(player.getHitbox(), key->getHitbox()))
+    {
+        key->itemConsumed();
+    }*/
     //TODO LO DE LAS COLISIONES VA AQUÍ
     //detectColls(collboxes, &camera, renderCollBox, collidedObject_callback);
 }

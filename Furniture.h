@@ -11,6 +11,7 @@ public:
 	Furniture(glm::vec3 housePosition, glm::vec3 furniturePosition, const char* path);
 	~Furniture();
 	void DrawFurniture(Shader shader);
+	glm::vec3 getPosition();
 private:
 
 public:

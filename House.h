@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HOUSE_H
+#define HOUSE_H
 #include <engine/model.h>
 #include "Building.h"
 #include "Furniture.h"
@@ -11,6 +12,7 @@ public:
 	House(glm::vec3 ubication, bool isDoorOpen);
 	~House();
 	void DrawHouse(Shader shader);
+	glm::vec3 getTable();
 private:
 
 public:
@@ -22,3 +24,4 @@ private:
 	Furniture painting;
 };
 
+#endif

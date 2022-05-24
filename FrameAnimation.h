@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FRAMEANIMATION_H
+#define FRAMEANIMATION_H
 class FrameAnimation
 {
 	//Methods
@@ -17,4 +18,4 @@ private:
 	float switchTime;
 	float totalTime;
 };
-
+#endif

@@ -1,9 +1,10 @@
-#pragma once
+#ifndef OBJECT_H
+#define OBJECT_H
+
 #include <engine/model.h>
 #include <cstdlib>
-#include <iostream>
 #include "Hitbox.h"
-#include "Building.h"
+#include "House.h"
 enum Item
 {
 	CAN, BAND, BATTERY, KEY
@@ -13,21 +14,24 @@ class Object
 public:
 	Object();
 	Object(glm::vec3 _position, Item _item);
-	Object(Item _item, Building* buildingList);
+	Object(Item _item, vector<House> city);
 	~Object();
 	void UpdateObject(float deltaTime);
 	void DrawObject(Shader _shader);
 	void Release();
 
-	void SetPos(glm::vec3 newPos)
-	{
-		position = newPos;
-	}
+	//void SetPos(glm::vec3 newPos)
+	//{
+	//	position = newPos;
+	//}
+	Hitbox getHitbox();
+	void itemConsumed();
 private:
 	void loadModel();
 public:
 
 private:
+	bool consumedItem;
 	Item item;
 	float angle;
 	float grades;
@@ -36,4 +40,4 @@ private:
 	Model objModel;
 	Hitbox objHitbox;
 };
-
+#endif

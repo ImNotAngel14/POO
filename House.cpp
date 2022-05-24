@@ -22,3 +22,10 @@ void House::DrawHouse(Shader shader)
 	bed.DrawFurniture(shader);
 	painting.DrawFurniture(shader);
 }
+
+glm::vec3 House::getTable()
+{
+	glm::vec3 overTableCoord = table.getPosition();
+	overTableCoord.y = 1.5f;
+	return overTableCoord;
+}

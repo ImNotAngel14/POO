@@ -15,7 +15,7 @@ Building::~Building()
 {
 }
 
-void Building::Draw(Shader shader, glm::mat4 view, glm::mat4 projection)
+void Building::DrawBuilding(Shader shader)
 {
 	/*if (position.x > 0)
 		houseModel.setAngles(glm::vec3(0, 270,0));*/

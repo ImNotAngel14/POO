@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BUILDING_H
+#define BUILDING_H
 #include <engine/model.h>
 class Building
 {
@@ -7,10 +8,9 @@ public:
 	Building();
 	Building(glm::vec3 ubication);
 	~Building();
-	void Draw(Shader shader, glm::mat4 view, glm::mat4 projection);
+	void DrawBuilding(Shader shader);
 	void Release();
 	glm::vec3 getPosition();
-
 private:
 
 //Atributes
@@ -21,3 +21,4 @@ private:
 protected:
 	Model houseModel;
 };
+#endif

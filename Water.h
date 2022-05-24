@@ -1,4 +1,5 @@
-#pragma once
+#ifndef WATER_H
+#define WATER_H
 #include <engine/model.h>
 
 class Water
@@ -17,4 +18,4 @@ private:
 	float height;
 	Model waterModel;
 };
-
+#endif

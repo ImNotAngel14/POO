@@ -6,6 +6,7 @@ Object::Object()
 	grades = 0;
 	position = glm::vec3(0, 0, 0);
 	height = 0;
+	consumedItem = false;
 }
 
 Object::Object(glm::vec3 _position, Item _item)
@@ -15,16 +16,20 @@ Object::Object(glm::vec3 _position, Item _item)
 	position = _position;
 	item = _item;
 	loadModel();
+	objHitbox = Hitbox(position, 1.5f);
+	consumedItem = false;
 	//objModel = Model();
 }
-Object::Object(Item _item, Building* buildingList)
+Object::Object(Item _item, vector<House> city)
 {
+	////arriba de la mesa
 	item = _item;
-	int listSize = sizeof(buildingList);
+	int listSize = sizeof(city);
 	int random = rand() % listSize;
-	position = buildingList[random].getPosition();
+	position = city[random].getPosition();
 	position.y += 5;
 	loadModel();
+	consumedItem = false;
 }
 
 Object::~Object()
@@ -33,22 +38,39 @@ Object::~Object()
 
 void Object::UpdateObject(float deltaTime)
 {
-	angle < 360 ? angle += 45.0f * deltaTime : angle = 0;
-	grades < 180 ? grades += 0.5f * deltaTime : grades = 0;
-	objModel.setAngles(glm::vec3(0.0f, angle, 0.0f));
-	height = sin(grades)/2;
-	//std::cout << height<<endl;
-	objModel.setPosition(glm::vec3(position.x, position.y + height, position.z));
+	if (consumedItem == false)
+	{
+		angle < 360 ? angle += 45.0f * deltaTime : angle = 0;
+		grades < 180 ? grades += 0.5f * deltaTime : grades = 0;
+		objModel.setAngles(glm::vec3(0.0f, angle, 0.0f));
+		height = sin(grades) / 4;
+		objModel.setPosition(glm::vec3(position.x, position.y + height, position.z));
+		objHitbox.UpdateHitbox(position);
+	}
+	
 }
 
 void Object::DrawObject(Shader _shader)
 {
-	objModel.Draw(_shader);
+	if (consumedItem == false)
+		objModel.Draw(_shader);
 }
 
 void Object::Release()
 {
 	objModel.Release();
+}
+
+
+Hitbox Object::getHitbox()
+{
+	return objHitbox;
+}
+
+void Object::itemConsumed()
+{
+	consumedItem = true;
+	objHitbox.DisableHitbox();
 }
 
 void Object::loadModel()

@@ -30,3 +30,5 @@ void Furniture::DrawFurniture(Shader shader)
 {
 	furnitureModel.Draw(shader);
 }
+
+glm::vec3 Furniture::getPosition() { return this->position; }
