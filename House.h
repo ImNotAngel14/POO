@@ -12,7 +12,10 @@ public:
 	House(glm::vec3 ubication, const char* path);
 	~House();
 	void DrawBuilding(Shader shader);
-	glm::vec3 getTable();
+	glm::vec3 getTableCoord();
+	Furniture getTable();
+	Furniture getBed();
+	Furniture getPainting();
 private:
 
 public:

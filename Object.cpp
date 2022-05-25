@@ -18,18 +18,6 @@ Object::Object(glm::vec3 _position, Item _item)
 	loadModel();
 	objHitbox = Hitbox(position, 1.5f);
 	consumedItem = false;
-	//objModel = Model();
-}
-Object::Object(Item _item, vector<House> city)
-{
-	////arriba de la mesa
-	item = _item;
-	int listSize = sizeof(city);
-	int random = rand() % listSize;
-	position = city[random].getPosition();
-	position.y += 5;
-	loadModel();
-	consumedItem = false;
 }
 
 Object::~Object()
@@ -89,6 +77,9 @@ void Object::loadModel()
 		break;
 	case KEY:
 		ubication = "models/Llave/llave.obj";
+		break;
+	case TROPHY:
+		ubication = "models/Perro/dog.obj";
 		break;
 	}
 	objModel = Model("Object", ubication.c_str(), position, glm::vec3(0, 90, 0), 0.0f, 1.0f);

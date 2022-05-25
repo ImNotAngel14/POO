@@ -5,24 +5,24 @@ Player::Player()
 
 }
 
-Player::Player(int atk, int speed, glm::vec3 _position) : Entity(atk, speed)
+Player::Player(int atk, int speed, glm::vec3 _position, Camera* playerCamera) : Entity(atk, speed)
 {
 	position = _position;
 	playerHitbox = Hitbox(position, 0.5f, 4.0f);
+	this->playerCamera = playerCamera;
 }
 
 Player::~Player() 
 {
 }
 
-void Player::UpdatePlayer(Camera* _camera, float _dt)
+void Player::UpdatePlayer(float _dt)
 {
 	this->UpdateEntity(_dt);
-	this->position = _camera->Position;
+	this->position = playerCamera->Position;
 	if (this->isInvincible())
 	{
 		playerHitbox.DisableHitbox();
-		std::cout << "Health" << this->getHealth() << "%" << std::endl;
 	}
 		
 	playerHitbox.UpdateHitbox(position, _dt);
@@ -47,6 +47,12 @@ void Player::PickUpItem(Item item)
 	default:
 		break;
 	}
+}
+
+void Player::moveBack()
+{
+	playerCamera->ProcessKeyboard(BACKWARD, 0.1f);
+	this->position = playerCamera->Position;
 }
 
 void Player::setPlayerPos(glm::vec3 _cameraPos) { position = _cameraPos; }

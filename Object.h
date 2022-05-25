@@ -7,14 +7,13 @@
 #include "House.h"
 enum Item
 {
-	CAN, BAND, BATTERY, KEY
+	CAN, BAND, BATTERY, KEY, TROPHY
 };
 class Object
 {
 public:
 	Object();
 	Object(glm::vec3 _position, Item _item);
-	Object(Item _item, vector<House> city);
 	~Object();
 	void UpdateObject(float deltaTime);
 	void DrawObject(Shader _shader);

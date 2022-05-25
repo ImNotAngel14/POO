@@ -12,10 +12,11 @@ class Player : public Entity
 {
 public:
 	Player();
-	Player(int atk, int speed, glm::vec3 _position);
+	Player(int atk, int speed, glm::vec3 _position, Camera* playerCamera);
 	~Player();
-	void UpdatePlayer(Camera* _camera, float _dt);
+	void UpdatePlayer(float _dt);
 	void PickUpItem(Item);
+	void moveBack();
 	void setPlayerPos(glm::vec3 _cameraPos);
 	glm::vec3 getPlayerPos();
 	Hitbox getHitbox();
@@ -32,5 +33,6 @@ private:
 	bool hasTheTrophy;
 	glm::vec3 position;
 	Hitbox playerHitbox;
+	Camera* playerCamera;
 };
 #endif

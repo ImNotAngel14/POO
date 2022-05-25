@@ -1,7 +1,6 @@
 #ifndef ENEMY_H
 #define ENEMY_H
-#define PI 3.1416
-#define TO_DEG(RAD) (RAD / PI * 180.0)
+
 #include <engine/model.h>
 #include <math.h>
 #include "Entity.h"

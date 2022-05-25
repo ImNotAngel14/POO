@@ -120,6 +120,7 @@ int main()
     delete water;
     delete key;
     delete battery;
+    delete trophy;
     delete central;
     //delete trophy;
     delete[] texturePaths;
@@ -218,20 +219,21 @@ void initScene(Shader ourShader)
 
     int random[3];
     random[0] = rand() % 8;
-    glm::vec3 tempPos = city[random[0]].getTable();
+    glm::vec3 tempPos = city[random[0]].getTableCoord();
     key = new Object(tempPos, KEY);
     do 
     {
         random[1] = rand() % 8;
     } while (random[0] == random[1]);
-    tempPos = city[random[1]].getTable();
+    tempPos = city[random[1]].getTableCoord();
     battery = new Object(tempPos, BATTERY);
     do 
     {
         random[2] = rand() % 8;
     } while (random[2] == random[1] || random[2] == random[0]);
-    tempPos = city[random[2]].getTable();
-    //trophy = new Object(tempPos, BATTERY);
+    tempPos = city[random[2]].getTableCoord();
+    trophy = new Object(tempPos, TROPHY);
+
     water = new Water();
     
     //CREAMOS TODAS  LAS CAJAS DE COLISION INDIVIDUALES
@@ -245,6 +247,8 @@ void initScene(Shader ourShader)
     collboxes.insert(pair<int, pair<string, CollisionBox>>(2, pair<string, CollisionBox>("pared_frente_der", collbox)));
     collbox = CollisionBox(glm::vec3(10.35, 5.41, 14.85), glm::vec3(0.3, 1, 3.6), colorCollbox);
     collboxes.insert(pair<int, pair<string, CollisionBox>>(3, pair<string, CollisionBox>("pared_frente_arriba", collbox)));
+    collbox = CollisionBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(5, 5, 5), colorCollbox);
+    collboxes.insert(pair<int, pair<string, CollisionBox>>(3, pair<string, CollisionBox>("radio_station", collbox)));
 
     //CREAMOS LOS LIGHTCUBES QUE ENREALIDAD SON COLLISION BOXES QUE NOS AYUDARAN A IDENTIFICAR LA POSICIÓN DE DONDE ESTAN
     glm::vec3 lScale(0.5);
@@ -318,6 +322,7 @@ void drawModels(Shader* shader, glm::mat4 view, glm::mat4 projection)
     water->DrawWater(*shader);
     key->DrawObject(*shader);
     battery->DrawObject(*shader);
+    trophy->DrawObject(*shader);
     central->DrawBuilding(*shader);
 }
 
@@ -329,9 +334,10 @@ void updateGame(float deltaTime)
     }
     key->UpdateObject(deltaTime);
     battery->UpdateObject(deltaTime);
+    trophy->UpdateObject(deltaTime);
     water->UpdateWater(deltaTime);
     //glm::vec3& cPos = camera.Position;
-    player.UpdatePlayer(&camera, deltaTime);
+    player.UpdatePlayer(deltaTime);
     for (int i = 0; i < enemys.size(); i++)
     {
         enemys[i].UpdateEnemy(deltaTime, player.getPlayerPos());
@@ -503,11 +509,21 @@ void collisions()
             enemys[i].attack(&player);
         }
     }
+    for (int i = 0; i < city.size(); i++)
+    {
+        if (player.getHitbox().areColliding(player.getHitbox(), city[i].getTable().getHitbox()))
+        {
+            /*glm::vec3 tempPos = city[i].getTable().getPosition();
+            player.moveBack(tempPos.x, tempPos.z);*/
+            player.moveBack();
+        }
+        
+    }
     
     /*if (player.getHitbox().areColliding(player.getHitbox(), key->getHitbox()))
     {
         key->itemConsumed();
     }*/
     //TODO LO DE LAS COLISIONES VA AQUÍ
-    //detectColls(collboxes, &camera, renderCollBox, collidedObject_callback);
+    detectColls(collboxes, &camera, renderCollBox, collidedObject_callback);
 }

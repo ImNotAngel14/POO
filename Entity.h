@@ -1,6 +1,11 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#define PI 3.1416
+#define TO_RAD(DEG) (DEG * PI / 180)
+#define TO_DEG(RAD) (RAD / PI * 180.0)
+#define POSITION_INC 1
+
 #include <iostream>
 class Entity
 {
