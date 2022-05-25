@@ -13,11 +13,13 @@ Furniture::Furniture(glm::vec3 position, const char* path)
 
 Furniture::Furniture(glm::vec3 housePosition, glm::vec3 furniturePosition, const char* path)
 {
+	
 	glm::vec3 temp(0.0f, 0.0f, 0.0f);
 	temp.x = housePosition.x + furniturePosition.x;
 	temp.y = housePosition.y + furniturePosition.y;
 	temp.z = housePosition.z + furniturePosition.z;
 	this->position = temp;
+	furnitureHitbox = Hitbox(temp, 2.5f);
 	furnitureModel = Model("Furniture", path, this->position, glm::vec3(0, 90, 0), 0.0f, 1.0f);
 }
 
@@ -32,3 +34,5 @@ void Furniture::DrawFurniture(Shader shader)
 }
 
 glm::vec3 Furniture::getPosition() { return this->position; }
+
+Hitbox Furniture::getHitbox() { return furnitureHitbox; }

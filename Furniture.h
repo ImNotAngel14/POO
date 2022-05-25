@@ -2,6 +2,7 @@
 #define FURNITURE_H
 #include <engine/model.h>
 #include "Building.h"
+#include "Hitbox.h"
 
 class Furniture 
 {
@@ -12,6 +13,7 @@ public:
 	~Furniture();
 	void DrawFurniture(Shader shader);
 	glm::vec3 getPosition();
+	Hitbox getHitbox();
 private:
 
 public:
@@ -19,6 +21,7 @@ public:
 private:
 	glm::vec3 position;
 	Model furnitureModel;
+	Hitbox furnitureHitbox;
 };
 #endif
 

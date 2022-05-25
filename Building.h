@@ -6,9 +6,9 @@ class Building
 //Methods
 public:
 	Building();
-	Building(glm::vec3 ubication);
+	Building(glm::vec3 ubication, const char* path);
 	~Building();
-	void DrawBuilding(Shader shader);
+	virtual void DrawBuilding(Shader shader);
 	void Release();
 	glm::vec3 getPosition();
 private:

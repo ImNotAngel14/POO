@@ -9,16 +9,15 @@ class House : public Building
 {
 public:
 	House();
-	House(glm::vec3 ubication, bool isDoorOpen);
+	House(glm::vec3 ubication, const char* path);
 	~House();
-	void DrawHouse(Shader shader);
+	void DrawBuilding(Shader shader);
 	glm::vec3 getTable();
 private:
 
 public:
 
 private:
-	bool isDoorOpen;
 	Furniture table;
 	Furniture bed;
 	Furniture painting;

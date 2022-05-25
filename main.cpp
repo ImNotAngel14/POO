@@ -71,47 +71,56 @@ int main()
     //:::: RENDER:::://
     while (!glfwWindowShouldClose(window))
     {
+        if (gameStatus == VICTORY)
+            std::cout << "VICTORIA. Hasta la proxima mision!" << std::endl;
+        if (gameStatus == DEFEAT)
+        {
+            std::cout << "DERROTA. Mejor suerte a la proxima" << std::endl;
+        }
+        if (gameStatus==INGAME)
+        {
+            //::::TIMING:::://Ayuda a crear animaciones fluidas
+            float currentFrame = glfwGetTime();
+            deltaTime = (currentFrame - lastFrame);
+            lastFrame = currentFrame;
+            respawnCount += 0.1;
 
-        //::::TIMING:::://Ayuda a crear animaciones fluidas
-        float currentFrame = glfwGetTime();
-        deltaTime = (currentFrame - lastFrame);
-        lastFrame = currentFrame;
-        respawnCount += 0.1;
+            //::::ENTRADA CONTROL:::://
+            processInput(window);
 
-        //::::ENTRADA CONTROL:::://
-        processInput(window);
+            //::::ACTUALIZAR:::::://
+            updateGame(deltaTime);
+            //water.UpdateWater(deltaTime);
+            //:::: LIMPIAMOS BUFFERS:::://
+            glClearColor(0.933f, 0.811f, 0.647f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            //:::: PASAMOS INFORMACIÓN AL SHADER:::://
+            ourShader.use();
+            //player.
 
-        //::::ACTUALIZAR:::::://
-        updateGame(deltaTime);
-        //water.UpdateWater(deltaTime);
-        //:::: LIMPIAMOS BUFFERS:::://
-        glClearColor(0.933f, 0.811f, 0.647f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //:::: PASAMOS INFORMACIÓN AL SHADER:::://
-        ourShader.use();
-        //player.
+            //:::: DEFINICIÓN DE MATRICES::::// La multiplicaciónd e model*view*projection crea nuestro entorno 3D
+            glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom),
+                (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+            glm::mat4 view = camera.GetViewMatrix();
+            ourShader.setMat4("projection", projection);
+            ourShader.setMat4("view", view);
 
-        //:::: DEFINICIÓN DE MATRICES::::// La multiplicaciónd e model*view*projection crea nuestro entorno 3D
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom),
-                                                (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        glm::mat4 view = camera.GetViewMatrix();
-        ourShader.setMat4("projection", projection);
-        ourShader.setMat4("view", view);
+            //:::: RENDER DE MODELOS:::://
+            drawModels(&ourShader, view, projection);
+            //:::: SKYBOX Y TERRENO:::://
+            loadEnviroment(&terrain, &sky, view, projection);
 
-        //:::: RENDER DE MODELOS:::://
-        drawModels(&ourShader, view, projection);
-        //:::: SKYBOX Y TERRENO:::://
-        loadEnviroment(&terrain, &sky, view, projection);
-        
-        //:::: COLISIONES :::://
-        collisions();
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+            //:::: COLISIONES :::://
+            collisions();
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
     }
     //:::: LIBERACIÓN DE MEMORIA::::// 
     delete water;
     delete key;
     delete battery;
+    delete central;
     //delete trophy;
     delete[] texturePaths;
     sky.Release();
@@ -187,22 +196,29 @@ void initScene(Shader ourShader)
     mapItems.push_back(Object(glm::vec3(0, 1, 20), CAN));
     mapItems.push_back(Object(glm::vec3(0, 1, -20), CAN));
 
-    city.push_back(House(glm::vec3(20, 0, 10), true));
-    city.push_back(House(glm::vec3(20, 0, -10), true));
-    city.push_back(House(glm::vec3(-20, 0, 10), true));
-    city.push_back(House(glm::vec3(-20, 0, -10), true));
-    city.push_back(House(glm::vec3(10, 0, 20), true));
-    city.push_back(House(glm::vec3(10, 0, -20), true));
-    city.push_back(House(glm::vec3(-10, 0, 20), true));
-    city.push_back(House(glm::vec3(-10, 0, -20), true));
+    enemys.push_back(Enemy(10, 2, EnemyType::BANDIT, glm::vec3(10, 0, 10)));
+    enemys.push_back(Enemy(10, 2, EnemyType::BANDIT, glm::vec3(10, 0, -10)));
+    enemys.push_back(Enemy(10, 2, EnemyType::BANDIT, glm::vec3(-10, 0, 10)));
+    enemys.push_back(Enemy(10, 2, EnemyType::EAGLE, glm::vec3(-10, 0, -10)));
 
-    city.push_back(House(glm::vec3(0.0f, 0.0f, 0.0f), false));//Central
+
+    city.push_back(House(glm::vec3(20, 0, 10), "models/House/house0.obj"));
+    city.push_back(House(glm::vec3(20, 0, -10), "models/House/house0.obj"));
+    city.push_back(House(glm::vec3(-20, 0, 10), "models/House/house0.obj"));
+    city.push_back(House(glm::vec3(-20, 0, -10), "models/House/house0.obj"));
+    city.push_back(House(glm::vec3(10, 0, 20), "models/House/house0.obj"));
+    city.push_back(House(glm::vec3(10, 0, -20), "models/House/house0.obj"));
+    city.push_back(House(glm::vec3(-10, 0, 20), "models/House/house0.obj"));
+    city.push_back(House(glm::vec3(-10, 0, -20), "models/House/house0.obj"));
+
+    central = new RadioStation(glm::vec3(0.0f, 0.0f, 0.0f), "models/House/house1.obj");
+    //city.push_back(House(glm::vec3(0.0f, 0.0f, 0.0f), "models/House/house0.obj"));//Central
 
     //0.1349f, 0.25f, 3.8589f
 
     int random[3];
     random[0] = rand() % 8;
-    glm::vec3 tempPos =city[random[0]].getTable();
+    glm::vec3 tempPos = city[random[0]].getTable();
     key = new Object(tempPos, KEY);
     do 
     {
@@ -270,11 +286,11 @@ void loadEnviroment(Terrain *terrain, SkyBox *sky, glm::mat4 view, glm::mat4 pro
             lights.second.second.draw(view, projection);
 
 }
-void drawModels(Shader *shader, glm::mat4 view, glm::mat4 projection)
+void drawModels(Shader* shader, glm::mat4 view, glm::mat4 projection)
 {
     //DEFINIMOS EL BRILLO  DEL MATERIAL
     shader->setFloat("material.shininess", 40.0f);//40.0
-    setMultipleLight(shader, pointLightPositions);   
+    setMultipleLight(shader, pointLightPositions);
     /*
     for (int i = 0; i < models.size(); i++)
     {
@@ -284,10 +300,15 @@ void drawModels(Shader *shader, glm::mat4 view, glm::mat4 projection)
         detectColls(&models[i].collbox, models[i].name, &camera, renderCollBox, collidedObject_callback);
     }
     */
+    for (int i = 0; i < enemys.size(); i++)
+    {
+        shader->use();
+        enemys[i].DrawEnemy(*shader);
+    }
     for (int i = 0; i < city.size(); i++)
     {
         shader->use();
-        city[i].DrawHouse(*shader);
+        city[i].DrawBuilding(*shader);
     }
     for (int i = 0; i < mapItems.size(); i++)
     {
@@ -297,6 +318,7 @@ void drawModels(Shader *shader, glm::mat4 view, glm::mat4 projection)
     water->DrawWater(*shader);
     key->DrawObject(*shader);
     battery->DrawObject(*shader);
+    central->DrawBuilding(*shader);
 }
 
 void updateGame(float deltaTime)
@@ -310,6 +332,12 @@ void updateGame(float deltaTime)
     water->UpdateWater(deltaTime);
     //glm::vec3& cPos = camera.Position;
     player.UpdatePlayer(&camera, deltaTime);
+    for (int i = 0; i < enemys.size(); i++)
+    {
+        enemys[i].UpdateEnemy(deltaTime, player.getPlayerPos());
+    }
+    if (player.getHealth() <= 0)
+        gameStatus = DEFEAT;
 }
 
 void setSimpleLight(Shader *shader)
@@ -439,21 +467,43 @@ void collisions()
     if (player.getHitbox().areColliding(player.getHitbox(), key->getHitbox()))
     {
         key->itemConsumed();
-        cout << "Llave recogida" << endl;
+        player.PickUpItem(KEY);
+
     }
     if (player.getHitbox().areColliding(player.getHitbox(), battery->getHitbox()))
     {
         battery->itemConsumed();
-        cout << "Bateria recogida" << endl;
+        player.PickUpItem(BATTERY);
     }
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < mapItems.size(); i++)
     {
         if (player.getHitbox().areColliding(player.getHitbox(), mapItems[i].getHitbox()))
         {
             mapItems[i].itemConsumed();
-            cout << "Lata "<<i<<" recogida" << endl;
         }
     }
+    if (player.getKeyFlag())
+    {
+        if (player.getHitbox().areColliding(player.getHitbox(), central->getHitbox()))
+        {
+            central->openDoor();
+        }
+    }
+    if (player.getBatteryFlag())
+    {
+        if (player.getHitbox().areColliding(player.getHitbox(), central->getRadioHitbox()))
+        {
+            gameStatus = VICTORY;
+        }
+    }
+    for (int i = 0; i < enemys.size(); i++)
+    {
+        if (player.getHitbox().areColliding(player.getHitbox(), enemys[i].getHitbox()))
+        {
+            enemys[i].attack(&player);
+        }
+    }
+    
     /*if (player.getHitbox().areColliding(player.getHitbox(), key->getHitbox()))
     {
         key->itemConsumed();

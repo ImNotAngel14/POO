@@ -1,5 +1,6 @@
 #ifndef FRAMEANIMATION_H
 #define FRAMEANIMATION_H
+#include <iostream>
 class FrameAnimation
 {
 	//Methods

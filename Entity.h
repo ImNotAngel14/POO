@@ -1,22 +1,30 @@
-#pragma once
+#ifndef ENTITY_H
+#define ENTITY_H
+
+#include <iostream>
 class Entity
 {
 public:
 	Entity();
-	Entity(int _maxHealth, int _atk, int _speed);
+	Entity(int atk, int speed);
 	~Entity();
-	void initEntity(int _maxHealth, int _atk, int _speed);
-	void attack();
+	void UpdateEntity(float deltaTime);
+	void attack(Entity* entity);
+	void setHealth(int atk);
 	int getAtk();
 	int getHealth();
 	int getSpeed();
+	bool isInvincible();
 private:
 
 public:
 
 private:
-	int health[2];
+	bool invencibility;
+	int health;
 	int atk;
 	int speed;
+	float elapsedTime;
 };
 
+#endif

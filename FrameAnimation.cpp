@@ -7,7 +7,7 @@ FrameAnimation::FrameAnimation()
 
 FrameAnimation::FrameAnimation(int _frames, float switchTime)
 {
-	this->frameCount = frameCount;
+	this->frameCount = _frames;
 	this->switchTime = switchTime;
 	actualFrame = 0;
 	totalTime = 0.0f;

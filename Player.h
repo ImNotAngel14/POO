@@ -2,23 +2,26 @@
 #define PLAYER_H
 #include <engine/model.h>
 #include <engine/camera.h>
+#include "Entity.h"
 #include "Hitbox.h"
 #include "Object.h"
 
 //#include "Inventory.h"
 
-class Player
+class Player : public Entity
 {
 public:
 	Player();
-	Player(glm::vec3 _position);
+	Player(int atk, int speed, glm::vec3 _position);
 	~Player();
 	void UpdatePlayer(Camera* _camera, float _dt);
 	void PickUpItem(Item);
 	void setPlayerPos(glm::vec3 _cameraPos);
 	glm::vec3 getPlayerPos();
-	//void pickUpItem(Items item, Objeto* obj);
 	Hitbox getHitbox();
+	bool getKeyFlag();
+	bool getBatteryFlag();
+	bool getTrophyFlag();
 private:
 
 public:
