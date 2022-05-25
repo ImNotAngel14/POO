@@ -27,11 +27,19 @@ Enemy::Enemy(int atk, int speed, EnemyType enemyType, glm::vec3 spawn) :Entity (
 		break;
 	case EnemyType::EAGLE:
 		animation = FrameAnimation(5, 0.4f);
-		enemyModel[0] = Model("Enemy1", "models/Ave/ave1.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 1.0f);
-		enemyModel[1] = Model("Enemy2", "models/Ave/ave2.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 1.0f);
-		enemyModel[2] = Model("Enemy3", "models/Ave/ave3.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 1.0f);
-		enemyModel[3] = Model("Enemy4", "models/Ave/ave4.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 1.0f);
-		enemyModel[4] = Model("Enemy5", "models/Ave/ave5.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 1.0f);
+		enemyModel[0] = Model("Enemy1", "models/Ave/ave1.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 2.0f);
+		enemyModel[1] = Model("Enemy2", "models/Ave/ave2.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 2.0f);
+		enemyModel[2] = Model("Enemy3", "models/Ave/ave3.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 2.0f);
+		enemyModel[3] = Model("Enemy4", "models/Ave/ave4.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 2.0f);
+		enemyModel[4] = Model("Enemy5", "models/Ave/ave5.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 2.0f);
+		break;
+	case EnemyType::RAT:
+		animation = FrameAnimation(4, 0.4f);
+		enemyModel[0] = Model("Enemy1", "models/Rata/rata1.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 2.0f);
+		enemyModel[1] = Model("Enemy2", "models/Rata/rata2.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 2.0f);
+		enemyModel[2] = Model("Enemy3", "models/Rata/rata3.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 2.0f);
+		enemyModel[3] = Model("Enemy4", "models/Rata/rata4.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 2.0f);
+		//enemyModel[4] = Model("Enemy5", "models/Ave/ave5.obj", spawn, glm::vec3(0, 90, 0), 0.0f, 2.0f);
 		break;
 	}
 	enemyHitbox = Hitbox(this->position, 0.6f);
@@ -44,7 +52,7 @@ Enemy::~Enemy()
 
 void Enemy::UpdateEnemy(float deltaTime, glm::vec3 playerPos)
 {
-	if (distanceBetween(playerPos, this->spawn) < 10.0f)
+	if (distanceBetween(playerPos, this->spawn) < 7.5f)
 	{
 		moveTo(playerPos, deltaTime);
 	}

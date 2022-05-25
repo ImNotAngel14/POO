@@ -28,6 +28,7 @@ private:
 public:
 
 private:
+	int hungry;
 	bool hasTheKey;
 	bool hasTheBattery;
 	bool hasTheTrophy;

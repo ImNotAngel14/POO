@@ -7,6 +7,7 @@ Player::Player()
 
 Player::Player(int atk, int speed, glm::vec3 _position, Camera* playerCamera) : Entity(atk, speed)
 {
+	hungry = 100;
 	position = _position;
 	playerHitbox = Hitbox(position, 0.5f, 4.0f);
 	this->playerCamera = playerCamera;
@@ -18,6 +19,7 @@ Player::~Player()
 
 void Player::UpdatePlayer(float _dt)
 {
+	hungry -= 10 * _dt;
 	this->UpdateEntity(_dt);
 	this->position = playerCamera->Position;
 	if (this->isInvincible())
@@ -41,17 +43,20 @@ void Player::PickUpItem(Item item)
 		hasTheBattery = true;
 		break;
 	case CAN:
+		hungry += 20;
 		break;
 	case BAND:
+		this->setHealth(-20);
 		break;
-	default:
+	case TROPHY:
+		hasTheTrophy = true;
 		break;
 	}
 }
 
 void Player::moveBack()
 {
-	playerCamera->ProcessKeyboard(BACKWARD, 0.1f);
+	playerCamera->ProcessKeyboard(BACKWARD, 0.05f);
 	this->position = playerCamera->Position;
 }
 

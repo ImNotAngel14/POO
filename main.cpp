@@ -72,10 +72,14 @@ int main()
     while (!glfwWindowShouldClose(window))
     {
         if (gameStatus == VICTORY)
+        {
             std::cout << "VICTORIA. Hasta la proxima mision!" << std::endl;
+            break;
+        }
         if (gameStatus == DEFEAT)
         {
             std::cout << "DERROTA. Mejor suerte a la proxima" << std::endl;
+            break;
         }
         if (gameStatus==INGAME)
         {
@@ -197,10 +201,15 @@ void initScene(Shader ourShader)
     mapItems.push_back(Object(glm::vec3(0, 1, 20), CAN));
     mapItems.push_back(Object(glm::vec3(0, 1, -20), CAN));
 
+    mapItems.push_back(Object(glm::vec3(15, 1, 15), BAND));
+    mapItems.push_back(Object(glm::vec3(15, 1, -15), BAND));
+    mapItems.push_back(Object(glm::vec3(-15, 1, -15), BAND));
+    mapItems.push_back(Object(glm::vec3(-15, 1, -15), BAND));
+
     enemys.push_back(Enemy(10, 2, EnemyType::BANDIT, glm::vec3(10, 0, 10)));
     enemys.push_back(Enemy(10, 2, EnemyType::BANDIT, glm::vec3(10, 0, -10)));
-    enemys.push_back(Enemy(10, 2, EnemyType::BANDIT, glm::vec3(-10, 0, 10)));
-    enemys.push_back(Enemy(10, 2, EnemyType::EAGLE, glm::vec3(-10, 0, -10)));
+    enemys.push_back(Enemy(10, 2, EnemyType::RAT, glm::vec3(-10, 0, 10)));
+    enemys.push_back(Enemy(10, 2, EnemyType::EAGLE, glm::vec3(-10.0f, 1.4f, -10.0f)));
 
 
     city.push_back(House(glm::vec3(20, 0, 10), "models/House/house0.obj"));
@@ -211,6 +220,10 @@ void initScene(Shader ourShader)
     city.push_back(House(glm::vec3(10, 0, -20), "models/House/house0.obj"));
     city.push_back(House(glm::vec3(-10, 0, 20), "models/House/house0.obj"));
     city.push_back(House(glm::vec3(-10, 0, -20), "models/House/house0.obj"));
+
+    mapExtraModels.push_back(Furniture(glm::vec3 (20,0,20),"models/Tuberia/tuberia1.obj"));
+    mapExtraModels.push_back(Furniture(glm::vec3(-20, 0, 20), "models/Puerta/puerta.obj"));
+    mapExtraModels.push_back(Furniture(glm::vec3(20, 0, 20), "models/Bote/bote.obj"));
 
     central = new RadioStation(glm::vec3(0.0f, 0.0f, 0.0f), "models/House/house1.obj");
     //city.push_back(House(glm::vec3(0.0f, 0.0f, 0.0f), "models/House/house0.obj"));//Central
@@ -318,6 +331,11 @@ void drawModels(Shader* shader, glm::mat4 view, glm::mat4 projection)
     {
         shader->use();
         mapItems[i].DrawObject(*shader);
+    }
+    for (int i = 0; i < mapExtraModels.size(); i++)
+    {
+        shader->use();
+        mapExtraModels[i].DrawFurniture(*shader);
     }
     water->DrawWater(*shader);
     key->DrawObject(*shader);
@@ -513,11 +531,19 @@ void collisions()
     {
         if (player.getHitbox().areColliding(player.getHitbox(), city[i].getTable().getHitbox()))
         {
-            /*glm::vec3 tempPos = city[i].getTable().getPosition();
-            player.moveBack(tempPos.x, tempPos.z);*/
             player.moveBack();
         }
-        
+        if (player.getHitbox().areColliding(player.getHitbox(), city[i].getBed().getHitbox()))
+        {
+            player.moveBack();
+        }
+    }
+    for (int i = 0; i < mapExtraModels.size(); i++)
+    {
+        if (player.getHitbox().areColliding(player.getHitbox(), mapExtraModels[i].getHitbox()))
+        {
+            player.moveBack();
+        }
     }
     
     /*if (player.getHitbox().areColliding(player.getHitbox(), key->getHitbox()))

@@ -19,7 +19,7 @@ Furniture::Furniture(glm::vec3 housePosition, glm::vec3 furniturePosition, const
 	temp.y = housePosition.y + furniturePosition.y;
 	temp.z = housePosition.z + furniturePosition.z;
 	this->position = temp;
-	furnitureHitbox = Hitbox(temp, 2.5f);
+	furnitureHitbox = Hitbox(temp, 1.0f);
 	furnitureModel = Model("Furniture", path, this->position, glm::vec3(0, 90, 0), 0.0f, 1.0f);
 }
 

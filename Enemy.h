@@ -10,7 +10,8 @@
 enum class EnemyType
 {
 	BANDIT,
-	EAGLE
+	EAGLE, 
+	RAT
 };
 
 class Enemy : public Entity
